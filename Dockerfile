@@ -30,11 +30,12 @@ RUN buildDeps=' \
 	&& make install \
 	&& cd ../../ \
 	&& rm -r src/httpd \
-	&& sed -ri ' \
-		s!^(\s*CustomLog)\s+\S+!\1 /proc/self/fd/1!g; \
-		s!^(\s*ErrorLog)\s+\S+!\1 /proc/self/fd/2!g; \
-		' /usr/local/apache2/conf/httpd.conf \
 	&& apt-get purge -y --auto-remove $buildDeps
 	
 	
 COPY ./httpd.conf /usr/local/apache2/conf/httpd.conf
+
+RUN sed -ri ' \
+	s!^(\s*CustomLog)\s+\S+!\1 /proc/self/fd/1!g; \
+	s!^(\s*ErrorLog)\s+\S+!\1 /proc/self/fd/2!g; \
+	' /usr/local/apache2/conf/httpd.conf
